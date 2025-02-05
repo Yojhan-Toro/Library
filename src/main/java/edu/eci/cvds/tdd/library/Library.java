@@ -34,7 +34,7 @@ public class Library {
      *
      * @return true if the book was stored false otherwise.
      */
-    public boolean addBook(Book book) {
+    public static boolean addBook(Book book) {
         //TODO Implement the logic to add a new book into the map.
         return false;
     }
@@ -75,4 +75,11 @@ public class Library {
         return users.add(user);
     }
 
+    public int getAmountBooks(){
+        int amount =0;
+        for(Integer amountBook :books.values()){
+            amount += amountBook;
+        }
+        return amount;
+    }
 }
