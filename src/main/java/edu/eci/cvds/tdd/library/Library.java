@@ -1,12 +1,14 @@
 package edu.eci.cvds.tdd.library;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import edu.eci.cvds.tdd.library.book.Book;
-import edu.eci.cvds.tdd.library.loan.Loan;
+import edu.eci.cvds.tdd.library.loan.*;
 import edu.eci.cvds.tdd.library.user.User;
 
 /**
@@ -59,8 +61,51 @@ public class Library {
      *
      * @return The new created loan.
      */
+
+    public Book checkBook(String isbn){
+        for (Book book : books.keySet()) {
+            if(book.getIsbn() == isbn && books.get(book) > 0){
+                return book;
+            }
+        }
+        return null;
+    }
+
+    public User checkUser(String userId){
+        for(User user: users){
+            if(user.getId()== userId){
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public boolean notRepeatedLoans(User user, Book book){
+        for(Loan loan: loans){
+            if(loan.getUser() == user && loan.getBook() == book){
+                return false;
+            }
+        }
+        return true;
+    }
+
     public Loan loanABook(String userId, String isbn) {
-        //TODO Implement the login of loan a book to a user based on the UserId and the isbn.
+        
+        User user = checkUser(userId);
+        Book book = checkBook(isbn);
+
+        if(user != null && book != null && notRepeatedLoans(user, book)){
+            books.put(book, books.get(book) - 1);
+            Loan loan = new Loan();
+            loan.setBook(book);
+            loan.setUser(user);
+            LocalDateTime now = LocalDateTime.now();
+            loan.setLoanDate(now);
+            loan.setStatus(LoanStatus.ACTIVE);
+            loans.add(loan);
+            return loan;
+        }
+
         return null;
     }
 
