@@ -1,13 +1,13 @@
 package edu.eci.cvds.tdd.library;
 
-import edu.eci.cvds.tdd.library.book.Book;
-import edu.eci.cvds.tdd.library.loan.Loan;
-import edu.eci.cvds.tdd.library.user.User;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import edu.eci.cvds.tdd.library.book.Book;
+import edu.eci.cvds.tdd.library.loan.Loan;
+import edu.eci.cvds.tdd.library.user.User;
 
 /**
  * Library responsible for manage the loans and the users.
@@ -35,8 +35,15 @@ public class Library {
      * @return true if the book was stored false otherwise.
      */
     public boolean addBook(Book book) {
-        //TODO Implement the logic to add a new book into the map.
-        return false;
+        int actualValue=0;
+        if(books.containsKey(book)==true){
+            actualValue = books.get(book);
+        }
+        books.put(book, actualValue+1);
+        
+        if(books.containsKey(book)==true){
+            return true;
+        } else return false;
     }
 
     /**
@@ -75,4 +82,19 @@ public class Library {
         return users.add(user);
     }
 
+    public int getAmountSpecificBook(Book book){
+        int amountBook = 0;
+        if(books.containsKey(book)==true){
+            amountBook = books.get(book);
+        }
+        return amountBook;
+    }
+
+    public int getAmountBooks(){
+        int amount =0;
+        for(Integer amountBook :books.values()){
+            amount += amountBook;
+        }
+        return amount;
+    }
 }
