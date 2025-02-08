@@ -3,6 +3,7 @@ package edu.eci.cvds.tdd.library;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -116,6 +117,19 @@ public class LibraryTest {
         assertEquals(true, result);
     }
 
+    @Test
+    public void loanABook_IncreaseQuantity_true(){
+ 
+        library.addUser(user);
+        user.setId("p1");
+        library.addBook(booktest);
+
+        int before = library.getAmountSpecificBook(booktest);
+        Loan test = library.loanABook("p1","10002");
+
+        assertTrue(library.getAmountSpecificBook(booktest) + 1  == before);
+    }
+
 
     //Tests addBook
 
@@ -144,6 +158,88 @@ public class LibraryTest {
         int initialAmount = library.getAmountSpecificBook(booktest);
         library.addBook(booktest);
         assertEquals(initialAmount+1, library.getAmountSpecificBook(booktest));
+    }
+
+
+
+    // Tets ReturnLoan
+
+    @Test
+    public void returnLoan_CanLoanReturned_NotNull(){
+        
+        library.addUser(user);
+        user.setId("p1");
+        library.addBook(booktest);
+
+        Loan loan = library.loanABook("p1","10002");
+        Loan result = library.returnLoan(loan);
+        assertNotNull(result);
+    }
+
+    @Test
+    public void returnLoan_ChangeState_True(){
+        
+        library.addUser(user);
+        user.setId("p1");
+        library.addBook(booktest);
+
+        Loan loan = library.loanABook("p1","10002");
+        Loan result = library.returnLoan(loan);  
+
+        assertEquals(LoanStatus.RETURNED, result.getStatus());
+    }
+
+    @Test
+    public void returnLoan_ChangeState_False(){
+        
+        library.addUser(user);
+        user.setId("p1");
+        library.addBook(booktest);
+
+        Loan loan = library.loanABook("p1","10002");
+        Loan result = library.returnLoan(loan);  
+
+        assertEquals(false, (LoanStatus.ACTIVE == result.getStatus()));
+    }
+
+    @Test
+    public void returnLoan_ChngeState_False(){
+        
+        library.addUser(user);
+        user.setId("p1");
+        library.addBook(booktest);
+
+        Loan loan = library.loanABook("p1","10002");
+        Loan result = library.returnLoan(loan);
+        Loan loan1 = library.loanABook("p1","10002");
+
+        assertNotNull(loan1);
+    }
+
+    @Test
+    public void returnLoan_IncreaseQuantity_true(){
+ 
+        library.addUser(user);
+        user.setId("p1");
+        library.addBook(booktest);
+        Loan test = library.loanABook("p1","10002");
+        int before = library.getAmountSpecificBook(booktest);
+
+        Loan loan1 = library.returnLoan(test);
+
+        assertTrue(library.getAmountSpecificBook(booktest) - 1  == before);
+    }
+
+    @Test
+    public void returnLoan_loanNotExist_Null(){
+ 
+        library.addUser(user);
+        user.setId("p1");
+        library.addBook(booktest);
+        Loan test = new Loan();
+        Loan loan1 = library.returnLoan(test);
+
+        assertNull(loan1);
     }
 
 }

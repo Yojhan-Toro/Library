@@ -23,3 +23,13 @@ Posteriormente codificamos el los metodos necesarios para que las pruebas pases 
 ![alt text](image/RealizacionDeMetodos.png)
 Ahora verificamos con Jacoco que no halla ningun error 
 ![alt text](image/VerificacionConJacoco.png)
+
+
+# Metodo returnLoan
+
+Primero hacemos las pruebas de unidad y las corremos para que nos generen error
+![alt text](image/RealizacionDePruebasReturnLoan.png)
+Posteriormente codificamos el los metodos necesarios para que las pruebas pases correctamente 
+![alt text](image/RealizacionDeMetodosReturnLoan.png)
+Ahora verificamos con Jacoco que no halla ningun error
+![alt text](image/VerificacionConJacocoReturnLoan.png)
