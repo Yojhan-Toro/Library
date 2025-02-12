@@ -1,13 +1,14 @@
 package edu.eci.cvds.tdd.library;
 
-import edu.eci.cvds.tdd.library.book.Book;
-import edu.eci.cvds.tdd.library.loan.Loan;
-import edu.eci.cvds.tdd.library.user.User;
-
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import edu.eci.cvds.tdd.library.book.Book;
+import edu.eci.cvds.tdd.library.loan.*;
+import edu.eci.cvds.tdd.library.user.User;
 
 /**
  * Library responsible for manage the loans and the users.
@@ -35,8 +36,15 @@ public class Library {
      * @return true if the book was stored false otherwise.
      */
     public boolean addBook(Book book) {
-        //TODO Implement the logic to add a new book into the map.
-        return false;
+        int actualValue=0;
+        if(books.containsKey(book)==true){
+            actualValue = books.get(book);
+        }
+        books.put(book, actualValue+1);
+        
+        if(books.containsKey(book)==true){
+            return true;
+        } else return false;
     }
 
     /**
@@ -52,8 +60,52 @@ public class Library {
      *
      * @return The new created loan.
      */
+
+    public Book checkBook(String isbn){
+        for (Book book : books.keySet()) {
+            if(book.getIsbn() == isbn && books.get(book) > 0){
+                return book;
+            }
+        }
+        return null;
+    }
+
+    public User checkUser(String userId){
+        for(User user: users){
+            if(user.getId()== userId){
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public boolean notRepeatedLoans(User user, Book book){
+        for(Loan loan: loans){
+            if(loan.getUser() == user && loan.getBook() == book && loan.getStatus() == LoanStatus.ACTIVE){
+                return false;
+            }
+        }
+        return true;
+    }
+
     public Loan loanABook(String userId, String isbn) {
-        //TODO Implement the login of loan a book to a user based on the UserId and the isbn.
+        
+        User user = checkUser(userId);
+        Book book = checkBook(isbn);
+
+        if(user != null && book != null && notRepeatedLoans(user, book)){
+
+            books.put(book, books.get(book) - 1);
+            Loan loan = new Loan();
+            loan.setBook(book);
+            loan.setUser(user);
+            LocalDateTime now = LocalDateTime.now();
+            loan.setLoanDate(now);
+            loan.setStatus(LoanStatus.ACTIVE);
+            loans.add(loan);
+            return loan;
+        }
+
         return null;
     }
 
@@ -66,8 +118,25 @@ public class Library {
      *
      * @return the loan with the RETURNED status.
      */
+
+    public boolean loanExists(Loan entrance){
+        for(Loan loan: loans){
+            if(loan.getBook() == entrance.getBook() && loan.getUser() == entrance.getUser() && loan.getStatus() == LoanStatus.ACTIVE){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Loan returnLoan(Loan loan) {
-        //TODO Implement the login of loan a book to a user based on the UserId and the isbn.
+
+        if(loanExists(loan))
+        {
+            loan.setStatus(LoanStatus.RETURNED);
+            loan.setReturnDate(LocalDateTime.now());
+            books.put(loan.getBook(), books.get(loan.getBook()) + 1);
+            return loan;
+        }
         return null;
     }
 
@@ -75,4 +144,19 @@ public class Library {
         return users.add(user);
     }
 
+    public int getAmountSpecificBook(Book book){
+        int amountBook = 0;
+        if(books.containsKey(book)==true){
+            amountBook = books.get(book);
+        }
+        return amountBook;
+    }
+
+    public int getAmountBooks(){
+        int amount =0;
+        for(Integer amountBook :books.values()){
+            amount += amountBook;
+        }
+        return amount;
+    }
 }
