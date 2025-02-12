@@ -1,6 +1,5 @@
 package edu.eci.cvds.tdd.library;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,7 +81,7 @@ public class Library {
 
     public boolean notRepeatedLoans(User user, Book book){
         for(Loan loan: loans){
-            if(loan.getUser() == user && loan.getBook() == book){
+            if(loan.getUser() == user && loan.getBook() == book && loan.getStatus() == LoanStatus.ACTIVE){
                 return false;
             }
         }
@@ -95,6 +94,7 @@ public class Library {
         Book book = checkBook(isbn);
 
         if(user != null && book != null && notRepeatedLoans(user, book)){
+
             books.put(book, books.get(book) - 1);
             Loan loan = new Loan();
             loan.setBook(book);
@@ -118,8 +118,25 @@ public class Library {
      *
      * @return the loan with the RETURNED status.
      */
+
+    public boolean loanExists(Loan entrance){
+        for(Loan loan: loans){
+            if(loan.getBook() == entrance.getBook() && loan.getUser() == entrance.getUser() && loan.getStatus() == LoanStatus.ACTIVE){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Loan returnLoan(Loan loan) {
-        //TODO Implement the login of loan a book to a user based on the UserId and the isbn.
+
+        if(loanExists(loan))
+        {
+            loan.setStatus(LoanStatus.RETURNED);
+            loan.setReturnDate(LocalDateTime.now());
+            books.put(loan.getBook(), books.get(loan.getBook()) + 1);
+            return loan;
+        }
         return null;
     }
 
